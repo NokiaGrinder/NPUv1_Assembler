@@ -1,0 +1,424 @@
+File = "Assembly.txt"
+#Filename you want to assemble is stored in File
+
+EPass = False
+SPass = False
+
+class ISA:
+    def __init__(self,identifer,function):
+        self.identifier = identifer
+        self.function = function
+        
+def Label_Check(Instruction):
+    EPass = False
+    SPass = False
+    if "." in Instruction:
+        if Instruction[-4] == ".":
+            EPass = True
+        if Instruction[0] == ".":
+            SPass = True
+    return SPass, EPass
+
+def NOP(Instruction):
+    SPass, EPass = Label_Check(Instruction)
+    Instruction = Instruction.split(" ")
+    if SPass:
+        Instruction[1] = Instruction[1].replace("nop", "000000|000000|000000|000000")
+        Instruction[1] = Instruction[1].replace("\n", "")
+    else:
+        Instruction[5] = Instruction[5].replace("nop", "000000|000000|000000|000000")
+        Instruction[5] = Instruction[5].replace("\n", "")
+    Instruction = "|".join(Instruction)
+    return Instruction
+NO_OPERATION = ISA("nop", NOP)
+#   /
+# \/
+
+def HLT(Instruction):
+    SPass, EPass = Label_Check(Instruction)
+    Instruction = Instruction.split(" ")
+    if SPass:
+        Instruction[1] = Instruction[1].replace("hlt", "000001|000000|000000|000000")
+        Instruction[1] = Instruction[1].replace("\n", "")
+    else:
+        Instruction[5] = Instruction[5].replace("hlt", "000001|000000|000000|000000")
+        Instruction[5] = Instruction[5].replace("\n", "")
+    Instruction = "|".join(Instruction)
+    return Instruction
+HALT = ISA("hlt", HLT)
+#   /
+# \/
+
+def ADD(Instruction):
+    SPass, EPass = Label_Check(Instruction)
+    Instruction = Instruction.replace("add", "000010")
+    Instruction = Instruction.replace("r", "")
+    Instruction = Instruction.split(" ")
+    if SPass:
+        for i in range(3):
+            Instruction[i+2] = bin(int(Instruction[i+2]))
+            Instruction[i+2] = Instruction[i+2].replace("0b", "")
+            Instruction[i+2] = Instruction[i+2].zfill(6)
+    else:
+        for i in range(3):
+            Instruction[i+6] = bin(int(Instruction[i+6]))
+            Instruction[i+6] = Instruction[i+6].replace("0b", "")
+            Instruction[i+6] = Instruction[i+6].zfill(6)
+    Instruction = "|".join(Instruction)
+    return Instruction
+ADDITION = ISA("add", ADD)
+#   /
+# \/
+
+def SUB(Instruction):
+    SPass, EPass = Label_Check(Instruction)
+    Instruction = Instruction.replace("sub", "000011")
+    Instruction = Instruction.replace("r", "")
+    Instruction = Instruction.split(" ")
+    if SPass:
+        for i in range(3):
+            Instruction[i+2] = bin(int(Instruction[i+2]))
+            Instruction[i+2] = Instruction[i+2].replace("0b", "")
+            Instruction[i+2] = Instruction[i+2].zfill(6)
+    else:
+        for i in range(3):
+            Instruction[i+6] = bin(int(Instruction[i+6]))
+            Instruction[i+6] = Instruction[i+6].replace("0b", "")
+            Instruction[i+6] = Instruction[i+6].zfill(6)
+    Instruction = "|".join(Instruction)
+    return Instruction
+SUBTRACTION = ISA("sub", SUB)
+#   /
+# \/
+
+def XOR(Instruction):
+    SPass, EPass = Label_Check(Instruction)
+    Instruction = Instruction.replace("xor", "000100")
+    Instruction = Instruction.replace("r", "")
+    Instruction = Instruction.split(" ")
+    if SPass:
+        for i in range(3):
+            Instruction[i+2] = bin(int(Instruction[i+2]))
+            Instruction[i+2] = Instruction[i+2].replace("0b", "")
+            Instruction[i+2] = Instruction[i+2].zfill(6)
+    else:
+        for i in range(3):
+            Instruction[i+6] = bin(int(Instruction[i+6]))
+            Instruction[i+6] = Instruction[i+6].replace("0b", "")
+            Instruction[i+6] = Instruction[i+6].zfill(6)
+    Instruction = "|".join(Instruction)
+    return Instruction
+XOR_GATE = ISA("xor", XOR)
+#   /
+# \/
+
+def ORG(Instruction):
+    SPass, EPass = Label_Check(Instruction)
+    Instruction = Instruction.replace("org", "000101")
+    Instruction = Instruction.replace("r", "")
+    Instruction = Instruction.split(" ")
+    if SPass:
+        for i in range(3):
+            Instruction[i+2] = bin(int(Instruction[i+2]))
+            Instruction[i+2] = Instruction[i+2].replace("0b", "")
+            Instruction[i+2] = Instruction[i+2].zfill(6)
+    else:
+        for i in range(3):
+            Instruction[i+6] = bin(int(Instruction[i+6]))
+            Instruction[i+6] = Instruction[i+6].replace("0b", "")
+            Instruction[i+6] = Instruction[i+6].zfill(6)
+    Instruction = "|".join(Instruction)
+    return Instruction
+OR_GATE = ISA("org", ORG)
+#   /
+# \/
+
+def AND(Instruction):
+    SPass, EPass = Label_Check(Instruction)
+    Instruction = Instruction.replace("and", "000110")
+    Instruction = Instruction.replace("r", "")
+    Instruction = Instruction.split(" ")
+    if SPass:
+        for i in range(3):
+            Instruction[i+2] = bin(int(Instruction[i+2]))
+            Instruction[i+2] = Instruction[i+2].replace("0b", "")
+            Instruction[i+2] = Instruction[i+2].zfill(6)
+    else:
+        for i in range(3):
+            Instruction[i+6] = bin(int(Instruction[i+6]))
+            Instruction[i+6] = Instruction[i+6].replace("0b", "")
+            Instruction[i+6] = Instruction[i+6].zfill(6)
+    Instruction = "|".join(Instruction)
+    return Instruction
+AND_GATE = ISA("and", AND)
+#   /
+# \/
+
+def NOR(Instruction):
+    SPass, EPass = Label_Check(Instruction)
+    Instruction = Instruction.replace("nor", "000111")
+    Instruction = Instruction.replace("r", "")
+    Instruction = Instruction.split(" ")
+    if SPass:
+        for i in range(3):
+            Instruction[i+2] = bin(int(Instruction[i+2]))
+            Instruction[i+2] = Instruction[i+2].replace("0b", "")
+            Instruction[i+2] = Instruction[i+2].zfill(6)
+    else:
+        for i in range(3):
+            Instruction[i+6] = bin(int(Instruction[i+6]))
+            Instruction[i+6] = Instruction[i+6].replace("0b", "")
+            Instruction[i+6] = Instruction[i+6].zfill(6)
+    Instruction = "|".join(Instruction)
+    return Instruction
+NOR_GATE = ISA("nor", NOR)
+#   /
+# \/
+
+def RSH(Instruction):
+    SPass, EPass = Label_Check(Instruction)
+    Instruction = Instruction.replace("rsh", "001000")
+    Instruction = Instruction.replace("r", "")
+    Instruction = Instruction.split(" ")
+    if SPass:
+        for i in range(2):
+            Instruction[i+2] = bin(int(Instruction[i+2]))
+            Instruction[i+2] = Instruction[i+2].replace("0b", "")
+            Instruction[i+2] = Instruction[i+2].zfill(6)
+    else:
+        for i in range(2):
+            Instruction[i+6] = bin(int(Instruction[i+6]))
+            Instruction[i+6] = Instruction[i+6].replace("0b", "")
+            Instruction[i+6] = Instruction[i+6].zfill(6)
+    Instruction = "|".join(Instruction)
+    Instruction = Instruction + "|000000"
+    return Instruction
+RIGHT_SHIFT = ISA("rsh", RSH)
+#   /
+# \/
+
+def LDI(Instruction):
+    SPass, EPass = Label_Check(Instruction)
+    Instruction = Instruction.replace("ldi", "001001")
+    Instruction = Instruction.replace("r", "")
+    Instruction = Instruction.split(" ")
+    if SPass:
+        for i in range(2):
+            Instruction[i+2] = bin(int(Instruction[i+2]))
+            Instruction[i+2] = Instruction[i+2].replace("0b", "")
+            Instruction[i+2] = Instruction[i+2].zfill(6+(i*6))
+        Instruction[3] = Instruction[3] + "|"
+    else:
+        for i in range(2):
+            Instruction[i+6] = bin(int(Instruction[i+6]))
+            Instruction[i+6] = Instruction[i+6].replace("0b", "")
+            Instruction[i+6] = Instruction[i+6].zfill(6+(i*6))
+        Instruction[7] = Instruction[7] + "|"
+    Instruction = "|".join(Instruction)
+    return Instruction
+LOAD_IMMEDIATE = ISA("ldi", LDI)
+#   /
+# \/
+
+def ADI(Instruction):
+    SPass, EPass = Label_Check(Instruction)
+    Instruction = Instruction.replace("adi", "001010")
+    Instruction = Instruction.replace("r", "")
+    Instruction = Instruction.split(" ")
+    if SPass:
+        for i in range(2):
+            Instruction[i+2] = bin(int(Instruction[i+2]))
+            Instruction[i+2] = Instruction[i+2].replace("0b", "")
+            Instruction[i+2] = Instruction[i+2].zfill(6+(i*6))
+        Instruction[3] = Instruction[3] + "|"
+    else:
+        for i in range(2):
+            Instruction[i+6] = bin(int(Instruction[i+6]))
+            Instruction[i+6] = Instruction[i+6].replace("0b", "")
+            Instruction[i+6] = Instruction[i+6].zfill(6+(i*6))
+        Instruction[7] = Instruction[7] + "|"
+    Instruction = "|".join(Instruction)
+    return Instruction
+ADD_IMMEDIATE = ISA("adi", ADI)
+#   /
+# \/
+
+def JMP(Instruction):
+    Instruction = Instruction.replace("\n", "")
+    SPass, EPass = Label_Check(Instruction)
+    Instruction = Instruction.replace("jmp", "001011")
+    Instruction = Instruction.replace("r", "")
+    Instruction = Instruction.split(" ")
+    Instruction = "|".join(Instruction)
+    Instruction = Instruction + "||"
+    return Instruction
+JUMP = ISA("jmp", JMP)
+#   /
+# \/
+
+def BRH(Instruction):
+    Instruction = Instruction.replace("\n", "")
+    SPass, EPass = Label_Check(Instruction)
+    Instruction = Instruction.replace("brh", "001100")
+    Instruction = Instruction.replace("r", "")
+    Instruction = Instruction.split(" ")
+    if not EPass:
+        if SPass:
+            for i in range(2):
+                Instruction[2+i] = bin(int(Instruction[2+i]))
+                Instruction[2+i] = Instruction[2+i].replace("0b", "")
+                Instruction[2+i] = Instruction[2+i].zfill(2+(i*14))
+        else:
+            for i in range(2):
+                Instruction[6+i] = bin(int(Instruction[6+1]))
+                Instruction[6+i] = Instruction[6+i].replace("0b", "")
+                Instruction[6+i] = Instruction[6+i].zfill(2+(i*14))
+    elif EPass and SPass:
+        Instruction[2] = bin(int(Instruction[2]))
+        Instruction[2] = Instruction[2].replace("0b", "")
+        Instruction[2] = Instruction[2].zfill(2)
+    else:
+        Instruction[6] = bin(int(Instruction[6]))
+        Instruction[6] = Instruction[6].replace("0b", "")
+        Instruction[6] = Instruction[6].zfill(2)
+    Instruction = "|".join(Instruction)
+    Instruction = Instruction + "|"
+    return Instruction
+BRANCH = ISA("brh", BRH)
+#   /
+# \/
+
+def CMP(Instruction):
+    SPass, EPass = Label_Check(Instruction)
+    Instruction = Instruction.replace("cmp", "000011")
+    Instruction = Instruction.replace("r", "")
+    Instruction = Instruction.split(" ")
+    if SPass:
+        for i in range(2):
+            Instruction[i+2] = bin(int(Instruction[i+2]))
+            Instruction[i+2] = Instruction[i+2].replace("0b", "")
+            Instruction[i+2] = Instruction[i+2].zfill(6)
+    else:
+        for i in range(2):
+            Instruction[i+6] = bin(int(Instruction[i+6]))
+            Instruction[i+6] = Instruction[i+6].replace("0b", "")
+            Instruction[i+6] = Instruction[i+6].zfill(6)
+    Instruction = "|".join(Instruction)
+    Instruction = Instruction + "|000000"
+    return Instruction
+COMPARE = ISA("cmp", CMP)
+#   /
+# \/
+
+def CAL(Instruction):
+    Instruction = Instruction.replace("\n", "")
+    SPass, EPass = Label_Check(Instruction)
+    Instruction = Instruction.replace("cal", "001101")
+    Instruction = Instruction.replace("r", "")
+    Instruction = Instruction.split(" ")
+    if not EPass:
+        if SPass:
+            Instruction[2] = bin(int(Instruction[2]))
+            Instruction[2] = Instruction[2].replace("0b", "")
+            Instruction[2] = Instruction[2].zfill(18)
+        else:
+            Instruction[6] = bin(int(Instruction[6]))
+            Instruction[6] = Instruction[6].replace("0b", "")
+            Instruction[6] = Instruction[6].zfill(18)
+    Instruction = "|".join(Instruction)
+    Instruction = Instruction.replace("\n", "")
+    Instruction = Instruction + "||"
+    return Instruction
+CALL = ISA("cal", CAL)
+    
+def RTN(Instruction):
+    Instruction = Instruction.replace("rtn", "|001110|000000|000000|000000")
+    Instruction = Instruction.replace(" ", "")
+    Instruction = Instruction.replace("\n", "")
+    return Instruction
+RETURN = ISA("rtn", RTN)
+    
+def LOD(Instruction):
+    SPass, EPass = Label_Check(Instruction)
+    Instruction = Instruction.replace("lod", "001111")
+    Instruction = Instruction.replace("r", "")
+    Instruction = Instruction.split(" ")
+    if SPass:
+        for i in range(3):
+            Instruction[i+2] = bin(int(Instruction[i+2]))
+            Instruction[i+2] = Instruction[i+2].replace("0b", "")
+            Instruction[i+2] = Instruction[i+2].zfill(6)
+    else:
+        for i in range(3):
+            Instruction[i+6] = bin(int(Instruction[i+6]))
+            Instruction[i+6] = Instruction[i+6].replace("0b", "")
+            Instruction[i+6] = Instruction[i+6].zfill(6)
+    Instruction = "|".join(Instruction)
+    return Instruction
+LOAD = ISA("lod", LOD)
+
+def STR(Instruction):
+    SPass, EPass = Label_Check(Instruction)
+    Instruction = Instruction.replace("str", "010000")
+    Instruction = Instruction.replace("r", "")
+    Instruction = Instruction.split(" ")
+    if SPass:
+        for i in range(3):
+            Instruction[i+2] = bin(int(Instruction[i+2]))
+            Instruction[i+2] = Instruction[i+2].replace("0b", "")
+            Instruction[i+2] = Instruction[i+2].zfill(6)
+    else:
+        for i in range(3):
+            Instruction[i+6] = bin(int(Instruction[i+6]))
+            Instruction[i+6] = Instruction[i+6].replace("0b", "")
+            Instruction[i+6] = Instruction[i+6].zfill(6)
+    Instruction = "|".join(Instruction)
+    return Instruction
+STORE = ISA("str", STR)
+
+def FORL(Instruction):
+    FInstruction = Instruction.split(" ")
+    print("Start for loop")
+    x = f"     ldi {FInstruction[2]} 0"
+    print(LDI(x))
+    x = f"     ldi {FInstruction[3]} {FInstruction[1]}"
+    print(LDI(x))
+    x = f".con adi {FInstruction[2]} 1"
+    print(ADI(x))
+    #de code
+    with open(File) as f:
+        for FInst in f:
+            for i in Instructionset:
+                if i.identifier in FInst and "-" in FInst :
+                    print(i.function(FInst))
+    #de code
+    x = f"     cmp {FInstruction[2]} {FInstruction[3]}"
+    print(CMP(x))
+    x = "     brh 1 .end"
+    print(BRH(x))
+    x = "     jmp .con"
+    print(JMP(x))
+    x = ".end nop"
+    print(NOP(x))
+    
+    #so bro u gotta finish the Forl stuff
+    #also add special Loop Registers (hardware)
+    
+    #Forl n rx ry:
+    #0 1 2 3
+FOR_LOOP = ISA("Forl", FORL)
+
+Instructionset = [NO_OPERATION, HALT, ADDITION, SUBTRACTION, XOR_GATE, 
+                  OR_GATE, AND_GATE, NOR_GATE, RIGHT_SHIFT, LOAD_IMMEDIATE, 
+                  ADD_IMMEDIATE, JUMP, BRANCH, COMPARE, CALL, 
+                  RETURN, LOAD, STORE]
+
+#Stores the lines that are INSIDE a for loop
+
+with open(File) as f:
+    for Instruction in f:
+        for i in Instructionset:
+            if i.identifier in Instruction and "-" not in Instruction:
+                print(i.function(Instruction))
+        if "Forl" in Instruction:
+            print(FORL(Instruction))
